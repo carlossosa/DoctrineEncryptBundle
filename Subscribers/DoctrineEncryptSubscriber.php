@@ -275,7 +275,7 @@ class DoctrineEncryptSubscriber implements EventSubscriber {
                              */
                             if($encryptorMethod == "decrypt") {
                                 if(!is_null($getInformation) and !empty($getInformation)) {
-                                    if(substr($getInformation, -5) == "<ENC>" ) {
+                                    if( ! is_array($getInformation) && substr($getInformation, -5) == "<ENC>" ) {
                                         $this->decryptCounter++;
                                         $currentPropValue = $this->encryptor->decrypt(substr($getInformation, 0, -5));
                                         $entity->$setter($currentPropValue);
