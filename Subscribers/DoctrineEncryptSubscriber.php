@@ -275,7 +275,7 @@ class DoctrineEncryptSubscriber implements EventSubscriber {
                              */
                             if($encryptorMethod == "decrypt") {
                                 if(!is_null($getInformation) and !empty($getInformation)) {
-                                    if(substr($getInformation, -5) == "<ENC>") {
+                                    if(substr($getInformation, -5) == "<ENC>" ) {
                                         $this->decryptCounter++;
                                         $currentPropValue = $this->encryptor->decrypt(substr($getInformation, 0, -5));
                                         $entity->$setter($currentPropValue);
@@ -283,9 +283,13 @@ class DoctrineEncryptSubscriber implements EventSubscriber {
                                 }
                             } else {
                                 if(!is_null($getInformation) and !empty($getInformation)) {
-                                    if(substr($entity->$getter(), -5) != "<ENC>") {
+                                    if( is_array($entity->$getter()) || substr($entity->$getter(), -5) != "<ENC>") {
                                         $this->encryptCounter++;
-                                        $currentPropValue = $this->encryptor->encrypt($entity->$getter());
+                                        $currentPropValue = $this->encryptor->encrypt(
+                                            ( is_array($entity->$getter())) ?
+                                                json_encode($entity->$getter()) :
+                                                $entity->$getter()
+                                        );
                                         $entity->$setter($currentPropValue);
                                     }
                                 }
